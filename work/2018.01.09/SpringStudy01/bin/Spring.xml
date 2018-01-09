@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- bean的三种实例化方式 -->
+	<!-- ①.使用类的无参构造创建 （最常用） -->
+	<!-- <bean id="bean1" class="com.hellospring.demo.Bean1" init-method="init"></bean> -->
+	
+	<!-- ②.使用静态工厂创建对象 -->
+	<!--  -->
+	<!-- <bean id="bean2" class="com.hellospring.demo.Bean2Factory" factory-method="getBean"></bean> -->
+	
+	<!-- ③.使用非静态工厂创建对象 -->
+	<!-- 创建工厂对象 -->
+	<!-- <bean id="bean3factory" class="com.hellospring.demo.Bean3Factory"></bean> -->
+	<!-- <bean id="bean3"  factory-bean="bean3factory" factory-method="getBean"></bean> -->
+	
+	
+	<!-- 测试 scope  singleton 创建单例对象  默认值    -->
+	<bean id="beanscope1" class="com.hellospring.demo.Bean1" scope="singleton" ></bean>
+	<bean id="beanscope2" class="com.hellospring.demo.Bean1" scope="prototype" ></bean>
+	<!-- Id spring创建当前类的实例 实例存储在spring容器 Id 当前实例在spring容器中的唯一标识 
+	     class="" 当前类的全称
+	     abstract="true" 当前属性标识当前的类是一个抽象(不能等同于当前类定义为抽象类)
+	     spring在管理bean不会创建当前类的对象
+	     depends-on="" 在创建当前类的对象时依赖的对象
+	     init-method="方法名" 定义创建完当前类的对象 立即调用的初始化的方法
+	     factory-bean="" 定义创建当前类的工厂
+	     factory-method="" 定义创建当前类的工厂的方法
+	     name="" 当前bean的名称
+	     scope="" 定义spring创建当前类的bean的实例(prototype 每次得到都是新的实例)
+	     (singleton)每次得到都是想同的实例
+	-->
+</beans>

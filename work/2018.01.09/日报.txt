@@ -1,0 +1,51 @@
+主  题：日报
+汇报人：张家乐
+日  期：2018年1月9日 星期二
+内  容：
+1.今日学习了的内容：
+1）主要是复习和巩固spring框架的学习：
+	①了解spring的概念。spring是开源的轻量级框架。（轻量级和重量级 主要是以启动程序需要的资源来决定的，Spring 的核心包在文件容量上只有不到1MB 的大小）
+	②spring核心主要分为两部分：（1）AOP：面向切面编程（扩展功能不是修改源代码实现）
+								（2）IOC：控制反转（对象的创建不是通过new方式，而是交给spring配置创建类对象）
+	③spring是一站式框架：spring在javaEE三层结构中，每一层都提供不同的解决技术
+		web层：springMVC
+		service层：spring的ioc
+		dao层：spring的jdbcTemplate
+2）bean的三种实例化方式：
+	①使用类的无参构造创建 （最常用）
+	②使用静态工厂创建对象  factory-method（定义创建当前类的工厂的方法）
+	③使用非静态工厂创建对象 创建工厂对象，再利用factory-bean（定义创建当前类的工厂） factory-method
+3）bean标签的基本属性
+	①id 类实例的标识，通过id可以得到配置对象  属性值不能包含特殊符号
+	②name 和id很像，但属性值可以有特殊符号，一个bean可以用多个名称 
+	③class 当前类的全称
+	④
+	③abstract=“true” 当前属性标识当前的类是一个抽象（不代表着这个类本事就是抽象类），spring在管理bean时，不会创建这个类的对象
+	④init-method="方法名" 定义创建完类对象的时候，会立即执行的初始化方法
+	⑤factory-bean=“” 定义创建当前类的工厂
+	⑥factory-method=“” 定义创建当前类的工厂的方法
+4）spring框架中属性注入方式（两种方式）
+	（1）使用set方式注入（最常用） 
+		property标签
+		属性：name 变量名  value 变量值（字符串注入） /  ref id值（对象注入）
+	
+	（2）使用有参构造注入
+		constructor-arg标签  
+		属性：name 变量名  value 变量值
+	（3）使用接口注入（不支持，但也是一种属性注入方式）（接口注入也很像set方式注入，并且其耦合度也高）
+	
+5）p 名称空间注入（字符串注入 ）
+		首先在beans标签中加入xmlns：p属性
+		在bean标签写完id class 后加上 p:变量名=“值”
+6）复杂类型注入（set方式）
+	数组  property:list:value
+	list集合  property:list:value
+	map集合 property:map:entry
+	properties  peoperty:props:prop
+7) IOC和DI区别：
+	IOC:控制反转，把对象交给spring进行配置
+	DI：依赖注入，向类里面的属性设置值
+	依赖注入不能单独存在，需要在ioc基础之上完成操作
+2.明天的学习计划：
+	继续学习spring框架后边的内容，写几个spring实例，巩固这两天的学习内容。
+

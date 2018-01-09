@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	
+	<!-- 字符串注入 -->
+	<!-- set方式进行属性注入 -->
+	<bean id="user" class="com.hellospring.demo.User">
+		<property name="name" value="小明"></property>
+	</bean>
+	
+	<!-- 有参构造方式进行属性注入 -->
+	<bean id="person" class="com.hellospring.demo.Person">
+		<constructor-arg name="pname" value="小王"></constructor-arg>
+	</bean>
+	
+	
+	<!-- 对象注入 -->
+	<bean id="userDao" class="com.hellospring.dao.UserDao"></bean>
+	<bean id="userService" class="com.hellospring.service.UserService">
+	<!-- ref 的值必须是 bean标签中的id值 -->
+		<property name="userDao" ref="userDao"></property>
+	</bean>
+	
+	<!-- p 名称空间注入 -->
+	<bean id="ptest" class="com.hellospring.demo.Ptest" p:p="123"></bean>
+	
+	<!-- 复杂类型注入 -->
+	<bean id="complex" class="com.hellospring.demo.Complex">
+		<!-- 数组注入 -->
+		<property name="str">
+			<list>
+				<value>111</value>
+				<value>222</value>
+				<value>333</value>
+			</list>			
+		</property>
+		<!-- list集合注入 -->
+		<property name="list">
+			<list>
+				<value>111</value>
+				<value>222</value>
+				<value>333</value>
+			</list>			
+		</property>
+		<!-- map集合注入 -->
+		<property name="map">
+			<map>
+				<entry key="a" value="aaa"></entry>
+				<entry key="b" value="bbb"></entry>
+				<entry key="c" value="ccc"></entry>
+			</map>
+		</property>
+		<!-- Properties注入 -->
+		<property name="properties">
+			<props>
+				<prop key="A">AAA</prop>
+				<prop key="B">BBB</prop>
+				<prop key="C">CCC</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>
