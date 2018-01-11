@@ -22,4 +22,62 @@
 	配置和注解混合使用：
 		创建对象操作使用配置文件方式实现
 		注入属性的操作使用注解方式实现
+2）AOP 面向切面编程
+	①概念：
+		扩展功能不用修改源代码实现，采用横向抽取机制，取代传统纵向继承体系重复性代码。
+	②底层实现：使用动态代理
+		1> JDK的动态代理：针对有接口情况，使用动态代理创建接口实现类代理对象
+		2> Chlib的动态代理：针对没有接口情况，使用动态代理创建类的子类代理对象
+	③主要相关术语：
+		Joinpoint(连接点)：类里面可以被增强的方法称为连接点
+		Pointcnt（切入点）：实际被增强（已经被增强）的方法称为切入点
+		Advice(通知/增强)：增强的逻辑，称为增强，如：扩展个日志功能，这个日志功能就被称为增强
+			前置通知 before：在增强方法之前执行
+			返回通知 after-returning：在增强方法之后执行
+			异常通知 after-throwing：在执行方法中出现异常时执行
+			后置通知 after：在返回通知后执行，无论方法是否正常执行完毕，都会执行后置通知
+			环绕通知 around：在方法之前和之后都执行
+		Aspect(切面)：把增强应用到具体方法上的过程称为切面，及把增强用到切面点的过程
+		Target（目标对象）：增强方法的类
+3）AOP操作
+	①在Spring里面进行AOP操作，需要使用aspectj实现
+		1>aspectj不是Spring的一部分，和Spring一起使用进行AOP操作
+		2>Spring2.0以后新增了对Aspectj支持
+	②使用aspectj实现AOP的两种方式
+		1>基于aspectj的xml配置
+			（1）配置对象
+				<bean id="" class=""></bean>
+			（2）配置AOP操作
+				aop:config 标签 
+					①配置切入点
+						aop:pointcut 标签 
+							expression属性（表达式）
+								表达式： execution（<访问修饰符>？<返回类型><被增强方法名>(<参数>)<异常>）
+									1>execution（* com.hellospring.Book.add(..)）  指定被增强方法名
+									2>execution(* com.hellospring.Book.*(..))   Book类中所有方法
+									3>execution(* com.hellospring.*.*(..))  包中所有类中所有方法
+									4>execution(* com.hellospring.Book.save*(..))  匹配Book类中所有save开头的方法
+							id属性： 起名字，标识
+					②配置切面
+						aop:aspect 标签
+							ref属性： value值为配置对象的id（增强类）
+							aop：before 标签（ aop：after-returning, aop：after） 
+								method属性：增强类的方法名
+								pointcut-ref属性：切入点的id
+							aop: around 标签(在实现环绕通知时，方法需要带有ProceedingJoinPoint参数，方法内用参数.proceed（）来执行被增强方法
+								public void around(ProceedingJoinPoint pjp) throws Throwable {pjp.proceed();})
+							aop：after-throwing 标签
+		2>基于aspectj的注解方式（下一日报中介绍）
+4）log4j介绍
+	通过log4j可以看到程序运行过程中更详细的信息
+	使用过程：
+		①导入log4j的jar包   ②复制log4j的配置文件（log4j.properties），复制到src下面
+	设置日志级别：
+		在配置文件中修改log4j.rootLogger 的值
+		①info，查看基本信息
+		②debug，看到更详细信息
 
+2.明天的学习计划：
+1）基于aspectj的注解AOP操作
+2）spring的jdbc操作
+3）spring事务处理
