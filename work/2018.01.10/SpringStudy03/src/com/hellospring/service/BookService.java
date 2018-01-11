@@ -6,7 +6,7 @@ import com.hellospring.dao.BookDao;
 
 public class BookService {
 	
-	@Resource(name="bookDao")
+	@Resource(name="bookDao")//value值必须为id
 	BookDao bookDao;
 	public void Add() {
 		System.out.println(bookDao);

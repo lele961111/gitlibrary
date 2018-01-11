@@ -24,5 +24,9 @@
 	<classpathentry kind="lib" path="lib/spring-webmvc-4.2.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-webmvc-portlet-4.2.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-websocket-4.2.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/aopalliance.jar"/>
+	<classpathentry kind="lib" path="lib/aspectjrt.jar"/>
+	<classpathentry kind="lib" path="lib/aspectjtools.jar"/>
+	<classpathentry kind="lib" path="lib/aspectjweaver.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

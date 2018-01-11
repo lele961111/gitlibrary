@@ -9,6 +9,7 @@
 	<configs>
 		<config>src/Spring.xml</config>
 		<config>src/hybridspring.xml</config>
+		<config>src/AOPspring.xml</config>
 	</configs>
 	<autoconfigs>
 	</autoconfigs>
