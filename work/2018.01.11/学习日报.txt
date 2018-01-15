@@ -1,0 +1,50 @@
+
+主  题：日报
+汇报人：张家乐
+日  期：2018年1月11日 星期四
+内  容：
+1.今日学习了的内容：
+1）基于aspectj的注解AOP操作
+	①创建bean对象
+	②在spring核心配置文件中开启AOP操作
+		aop:aspectj-autoproxy 标签
+	③在增强类上面使用注解完成AOP操作
+		1>在增强类上使用@Aspect
+		2>在方法上使用@Before（value=“表达式”）@After @AfterReturning @Around
+2）spring的jdbcTemplate操作
+	①spring是一站式框架
+		1>针对javaEE三层，每一层都有解决技术
+		2>在dao层，使用jdbcTemplate
+	②spring对不同的持久化层技术都进行封装
+	③jdbcTemplate对jdbc进行封装
+	操作：
+		①导入jdbcTemplate使用的jar包
+		②创建对象，设置数据库信息
+		③创建jdbcTemplate对象，设置数据源
+		④调用jdbcTemplate对象里面的方法实现操作
+	添加、修改、删除操作：
+		①设置数据库信息   DriverManagerDateSource   set方法
+		②创建jdbcTemplate对象   new JdbcTemplate(DriverManagerDateSource 类型)
+		③调用jdbcTemplate对象里面的方法实现操作   jdbcTemplate.update（sql，多个参数）
+	查询操作：
+		①查询返回一个值   调用JdbcTemplate的queryForObject(sql,返回类型)
+		②查询返回一个对象  调用JdbcTemplate的queryForObject（sql,new MyRowMapper(),多个参数）
+			需要实现RowMaper接口
+		③查询返回一个集合  调用jdbcTemplate的query（sql，new MyRowMapper（））
+			
+3）spring配置连接池
+		①spring配置c3p0连接池
+		<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+			注入属性值
+			<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+			name: jdbcUrl  user  password
+		</bean>
+		②service和dao的注入操作
+			创建service和dao对象，在service中注入dao对象，在dao中注入jdbcTemplate对象，在jdbcTemplate中注入dataSource对象
+			dao类中定义jdbcTemplate对象，调用jdbcTemplate的update方法
+
+
+		
+
+		
+
