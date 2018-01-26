@@ -1,0 +1,121 @@
+springmvc
+
+配置web.xml
+	 servlet 前端控制器
+		servlet-name  注册servlet的名称  一般可写dispatcherServlet
+		servlet-class 要注册的servlet 的类地址  org.springframework.web.servlet.DispatcherServlet
+		init-param  初始化
+			param-name  contextConfigLocation
+			param-value classpath:springmvc.xml
+		--如果不写init，会默认找/WEB-INF/servlet的名称-servlet.xml
+		
+	servlet-mapping  配置注册的组件的访问路径
+		servlet-name  与servlet的name一致
+		url-pattern  匹配规则
+			1> /* 匹配所有文件 包括jsp 建议不使用
+			2> *.action  匹配以action结尾的请求  能使用 
+			3> / 匹配所有文件  不包括jsp  建议使用
+			
+配置springmvc.xml
+	扫描@Controler @Service @Component 注解
+	<context:component-scan base-package="含注解的类的位置（com.hellojava）"
+	<mvc:annotation-driven  /> 注解驱动 代替处理器映射器和处理器适配器
+	
+	
+Controller层的实现类
+	加注解：@Controler @Service @Component
+	方法前加RequestMapping注解  -->value：网页访问地址  如 value=“/com/itmmlist.action”   localhost:8080/com/itmmlist.action
+	(用来映射的，当页面访问到value地址时，会自动执行该方法)
+	方法返回ModelAndView
+	方法中定义ModelAndView对象 
+		对象.addObject(string,object)  string:
+		对象.setViewName（“jsp文件路径”）
+		
+springmvc三大组件：处理器映射器，处理器适配器，视图解析器
+
+mvc注解驱动： mvc:annotation-driven   可以省掉处理器映射器和适配器的配置
+可写成：  <context:component-scan ...
+		  <mvc:annotation-driven/>
+视图解析器： 简写页面访问名： /web-inf/index.jsp  -->index
+	<class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/"/>
+		<property name="suffix" value=".jsp"/>
+		
+spring监听器： 	listener    (读取上下文)
+					listener-class 
+					
+注解事务
+	<bean id="transactionManager" class="DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	<bean>
+开启注解
+	<tx：annotation-driven transaction-manager="transactionManager" />
+
+	
+	
+去修改页面入参id
+
+	@RequestMapping(value = "/itemEdit.action")
+
+	public ModelAndView toEdit(Integer id,
+			HttpServletRequest request,HttpServletResponse response
+			,HttpSession session,Model model){		
+		//查询一个商品
+		Items items = itemService.selectItemsById(id);
+		ModelAndView mav = new ModelAndView();
+		//数据
+		mav.addObject("item", items);
+		mav.setViewName("editItem");
+		return mav;		
+	}
+	
+	上边Controller层类中方法参数id要与jsp中的id一致
+	
+<td><a href="${pageContext.request.contextPath }/itemEdit.action?id=${item.id}">修改</a></td>
+
+
+提交修改页面 入参  为pojo对象  利用包装类
+	页面传参的形参名一定要与pojo里的属性名一致
+	
+	@RequestMapping(value = "/updateitem.action")
+//	public ModelAndView updateitem(Items items){
+	public ModelAndView updateitem(QueryVo vo){
+
+		//修改
+		itemService.updateItemsById(vo.getItems());
+		
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("success");
+		return mav;
+		
+	}
+	
+解决post提交乱码问题：
+	在web.xml中处理
+	<filter>
+		<filter-name>encoding</filter-name>
+		<filter-class>org.springframework.web.filter.CharcterEncodingFilter.class</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>utf-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encoding</filter-name>
+		<url-pattern>*.action</url-pattern> 拦截以action结尾的处理的
+	</filter-mapping>
+	
+自定义参数绑定
+	注解驱动配置：
+		<mvc:annotation-driven conversion-service=“”/>
+	配置Conveter转换器 转换工厂（日期，去掉前后空格）
+	<bean id="标识" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		配置多个转换器
+		<property name="converters">
+			<list>
+				<bean class="自定义转换器的类日期"> 填类的路径
+			</list>
+		</property>
+	</bean>
+	写转换工厂类  实现Converter<S,T>  S：页面传递过来的类型  T 转换后的类型
+	
