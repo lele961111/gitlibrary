@@ -1,0 +1,151 @@
+<form action="${pageContext.request.contexPath}/deletes.action" method="post">
+${pageContext.request.contexPath} 为项目名   deletes.action 
+
+参数绑定之数组
+public ModelAndView 方法名（数组）{
+	ModelAndView mav= new ModelAndView();
+}
+包装类： QueryVo里加个数组成员 ，参数写QueryVo  
+
+参数绑定之List  只能用包装类
+<c:forEach items="${itemList}" var="item" varStatus=“s”>    s：相当于for循环的int i=0  循环递增
+ 
+@RequesMapping(value="/updates.action" method=RequestMethod.POST) 映射路径  
+	value:放url 当只有一个参数时可省掉value，直接写url
+	method: 设置提交方式：post get  或者两个都可以
+	
+@RequestMapping(value="") 放在类上，简化方法中的url
+  如：方法上：/com/hellojava/loadAll.action  -->类上  /com/hellojava  方法上：loadALL.action
+  
+  Controller层方法返回值：
+	1.ModelAndView 无敌的 带着数据 返回视图路径  解耦  推荐使用
+	2.string  返回视图路径    形参Model来带数据   方法内 model.addAttribute("jsp中foreach中的item的参数一致",方法内要输出的参数)
+	3.void  不跳转视图， ajax请求合适（不跳转视图，只需返回数据）  返回json格式数据   异步请求使用
+		方法内写：request.getRequestDispatcher("jsp中foreach中的item的参数一致").forward(request,response);
+		
+重定向 Redirect   如修改信息后，重定向到loadall页面上。浏览器地址变更为重定向地址，
+	相当于执行了新的request和response，之前的请求参数丢失，需要指定请求参数时，在重定向的url后面添加？itemId=1
+	return“redirect：url？itemId=”+item.getId（）；
+	
+转发 forward
+	此方法执行后又继续执行另一个方法，浏览器地址栏还是原来的请求地址，没有执行新的request和response，之前的参数都在
+	return“forward:url”
+	
+	
+异常处理
+	异常：预期异常（知道的异常），运行时异常（不知道的异常）
+	dao,service,controller 都向上抛，  mvc指定HandlerExceptionResolver异常处理器来处理
+	
+	运行时异常
+	1>编写实现HandlerExceptionResolver接口的自定义实现类
+		实现方法中的参数： Object 发生异常的地方 包名+类名+方法名（形参） 字符串
+			创建ModelAndView 对象  调用addObject（“异常类型名称”，“显示的话”）设置数据   如：mav.addObject("error","未知异常")
+								   调用setViewName（“返回视图的名称”）;  设置跳转视图
+	2>在mvc配置文件中添加异常处理器
+	<bean class="com.itheima.springmvc.exception.CustomExceptionResolver"></bean>  class:异常类的地址
+	
+	预期异常
+	自定义异常  继承Exception的自定义异常类
+		定义string 变量存储异常信息
+		在Controller层 throw new 自定义异常
+		在上边创建的接口实现类中判断异常类型
+			if(e instanceof 自定义异常类名){
+				mav.addObject("","自定义异常对象的get方法");
+			}else{
+				mav.addObject（“异常类型名称”，“显示的话”）;
+			}
+			mav.setViewName("error");
+			
+上传图片
+	//判断当前是否有图片
+	<c:if test="${item.pic!=null}">
+		<img src="/pic/${item.pic}" width=100 height=100/>
+	</c:if>
+	<input type="file" name="pictureFile">  file:点击后会弹出资源管理器的选择页面
+	Controller层 方法的入参加上 MultipartFile（接口） 对象名（要与 file类的input标签的name一致）
+		要创建实现MultipartFile接口的类
+			在mvc配置文件中添加
+				<bean id="multipartResolver"(固定的) class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+					<!-- 上传图片的大小 -->
+					<property name="maxUploadSize" value="图片大小">
+				</bean>
+		在方法内添加
+			String name=UUID.randomUUID().toString().replaceAll("-","");
+			//获取图片的扩展名
+			String ext=FilenameUtils.getExtension(pictureFile.getOriginalFilename())
+			//保存图片
+			picturceFile.transferTo(new File("图片要存放的位置（绝对的物理位置）"+name+“."+ext));
+	
+json数据交互
+	jsp中：
+		导入jquery包
+		var params='{"id":1,"name":"测试","price":99.9}';
+		$.ajax({
+			url: "${pageContext.request.contextPath}/json.action",
+			data: params,
+			contentType: “application/json;charset=UTF-8” //发送数据的格式
+			type: "post",
+			dataType: "json", //回调
+			success：function（data）{
+				alert（data.name）;
+			}
+		});
+		
+		Controller json数据交互方法
+		@RequestMapping（value="/json.action"）
+		@ResponseBody   //自动将返回对象封装成json
+		public pojo json(@RequestBody pojo 对象){   //@RequestBody 将json数据转成pojo对象
+			return pojo对象；
+		}
+			
+			
+拦截器
+	mvc.xml 配置拦截器
+		<mvc:interceptors>
+			//配置多个拦截器
+			<mvc:interceptor>
+				<mvc:mapping path="/**"/>  //拦截规则   path： /** 拦截所有
+				//自定义的拦截器类
+				<bean class="拦截器类位置"></bean>
+			</mvc:interceptor>
+		</mvc:interceptor>
+	拦截器类：  实现接口 HandlerInterCeptor
+		三个实现方法 
+			preHandle方法前 按拦截器定义顺序调用  
+		postHandle方法后 按拦截器定义逆序调用  在拦截器链内所有拦截器返回成功时调用
+		afterCompletion页面渲染后 按拦截器定义逆序调用 只有preHandle返回true才调用
+		
+拦截器应用
+	在preHand方法内加
+	判断用户是否登录，没有登录重定向到登录页面，不放行；如果登录了，就放行
+	//URL: 访问地址 http://localhost:8080/springmvc/login.action
+	//URI: /login.action
+	String requestURI=request.getRequestURI(); 
+	if(!requestURI.contains("/login")){//判断访问页面是否为登录页面
+		String username=(String)request.getSession().getAttribute("USER_SESSION"); //获取输入的字符串给USER_SESSION
+		if(null==username){
+			response.sendRedirect(request.getContextPath()+"/login.action");
+			return false;
+		}		
+	}
+	return true;
+	
+	在Controller层添加方法  去登录页面的方法
+	
+	@RequestMapping(value="/login.action",method=RequestMethod.GET)
+	public String login(){
+		return "login";
+	}
+	提交后的操作
+	@RequestMapping(value="/login.action",method=RequestMethod.POST)
+	public String login(String username,HttpSession httpSession){
+		httpSession.setAttribute("USER_SESSION",username);
+		return "redirect：/item/itemlit.action";
+	}
+	
+	
+	
+	
+	
+	
+es的ik分词器6.1.1linux系统安装 和常见异常处理   es6.1.1的集成
